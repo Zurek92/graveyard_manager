@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 """Plik zawierający funkcje renderowanych stron dostępnych dla użytkownika."""
 # importy modułów py
-import datetime
 import bcrypt
+import random
+import numpy as np
+import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required, login_user
 from sqlalchemy import func, and_, or_
 
 # importy nasze
 
-from data_validate import DataForm, PwForm, OldPwForm
+from data_validate import DataForm, PwForm, OldPwForm, NewGraveForm, owner_required
 from db_models import db, User, Grave, Parcel, ParcelType, Family
 from data_db_manage import change_user_data, change_user_pw
 
@@ -23,18 +25,43 @@ def user_page():
     """Ogólny panel ustawień użytkownika."""
     graves = Grave.query.filter_by(user_id=current_user.id)
     parcels = Parcel.query.all()
-    # prices = Parcel.query.get(Parcel.parcel_type_id)
     taken_parcels = []
     for p, g in db.session.query(Parcel, Grave).filter(Parcel.id == Grave.parcel_id):
         taken_parcels.append(p.id)
     max_p = db.session.query(func.max(Parcel.position_x)).scalar()
 
-    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death)\
+    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth,
+                                             Grave.day_of_death, Grave.parcel_id)\
         .join(Family)\
         .filter(and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id))).all()
 
+
+    zombie_mode = False
+
+    if 'zombie_mode' in request.form:
+        zombie_mode = True
+
+    if 'follow_zombie' in request.form:
+        zombie_mode = True
+        x_moved = []
+        for x in taken_parcels:
+            moves = np.arange(-10, 10)
+            x += random.choice(moves)
+            if x < max_p * max_p and x != 0:
+                x_moved.append(abs(x))
+            elif x == 0:
+                x_moved.append(1)
+            else:
+                x_moved.append(max_p * max_p)
+        taken_parcels = [x for x in x_moved]
+
+    elif 'end' in request.form:
+        zombie_mode = False
+        taken_parcels = [x.parcel_id for x in Grave.query.all()]
+
     return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p,
-                           favourite_graves_list=favourite_graves_list, taken_parcels=taken_parcels)
+                           favourite_graves_list=favourite_graves_list, taken_parcels=taken_parcels,
+                           zombie_mode=zombie_mode)
 
 
 @pages_user.route('/user/password', methods=['POST', 'GET'])
@@ -86,61 +113,66 @@ def user_set_data():
 
 
 @pages_user.route('/add_grave/<p_id>', methods=['POST', 'GET'])
+@login_required
 def add_grave(p_id):
-    parcel = Parcel.query.filter_by(id=p_id).first()
-    p_id = parcel.id
-    parcel_grave = Parcel.query.filter_by(id=p_id).first()
-    parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
-    if Grave.query.filter_by(parcel_id=p_id).first() is None:
-        if request.method == 'POST':
-            name = request.form['name']
-            last_name = request.form['last_name']
-            day_of_birth = datetime.datetime.strptime(request.form['day_of_birth'], '%Y-%m-%d')
-            day_of_death = datetime.datetime.strptime(request.form['day_of_death'], '%Y-%m-%d')
+    parcel = Parcel.query.get(p_id)
+    parcel_type = ParcelType.query.get(parcel.parcel_type_id)
+    if Grave.query.filter_by(parcel_id=parcel.id).first() is None:
+        form = NewGraveForm(request.form)
+        if request.method == 'POST' and form.validate():
             new_grave = Grave(user_id=current_user.id,
-                              parcel_id=p_id,
-                              name=name,
-                              last_name=last_name,
-                              day_of_birth=day_of_birth,
-                              day_of_death=day_of_death)
-
-            if request.form['day_of_birth'] <= request.form['day_of_death']:
-                db.session.add(new_grave)
-                db.session.commit()
-                return redirect(url_for('pages_user.user_page'))
-
-            else:
-                flash('Nieprawidłowe dane!', 'error')
-                return redirect(url_for('pages_user.add_grave', p_id=p_id, parcel=parcel))
-
-
-        return render_template('add_grave.html', p_id=p_id, parcel=parcel, parcel_type=parcel_type)
-
-    else:
-        flash('Ta parcela jest już zajęta', 'error')
-        return redirect(url_for('pages_user.user_page'))
-
+                              parcel_id=parcel.id,
+                              name=form.name.data,
+                              last_name=form.surname.data,
+                              day_of_birth=form.birth_date.data,
+                              day_of_death=form.death_date.data)
+            db.session.add(new_grave)
+            db.session.commit()
+            return redirect(url_for('pages_user.user_page'))
+        return render_template('add_grave.html', form=form, parcel_type=parcel_type, parcel=parcel)
+    flash('Ta parcela jest już zajęta', 'error')
+    return redirect(url_for('pages_user.user_page'))
 
 
 @pages_user.route('/grave/<grave_id>', methods=['POST', 'GET'])
+@login_required
+@owner_required(Grave, 'grave_id')
 def grave(grave_id):
-    grave = Grave.query.filter_by(id=grave_id).first()
-    parcel_grave = Parcel.query.filter_by(id=grave.parcel_id).first()
-    parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
-
-    if request.method == 'POST':
-        grave.name = request.form['edited_name']
-        grave.last_name = request.form['edited_last_name']
-        grave.day_of_birth = datetime.datetime.strptime(request.form['edited_birth'], '%Y-%m-%d')
-        grave.day_of_death = datetime.datetime.strptime(request.form['edited_death'], '%Y-%m-%d')
+    grave = Grave.query.get(grave_id)
+    parcel_grave = Parcel.query.get(grave.parcel_id)
+    parcel_type = ParcelType.query.get(parcel_grave.parcel_type_id)
+    form = NewGraveForm(request.form,
+                        name=grave.name,
+                        surname=grave.last_name,
+                        birth_date=grave.day_of_birth,
+                        death_date=grave.day_of_death)
+    if request.method == 'POST' and form.validate():
+        grave.name = form.name.data
+        grave.last_name = form.surname.data
+        grave.day_of_birth = form.birth_date.data
+        grave.day_of_death = form.death_date.data
         db.session.commit()
-    return render_template('grave_page.html', grave_id=grave_id, grave=grave,
-                           parcel_type=parcel_type)
+        return redirect(url_for('pages_user.grave', grave_id=grave.id))
+    return render_template('grave_page.html', grave=grave, parcel_type=parcel_type, form=form)
 
 
 @pages_user.route('/delete/<grave_id>', methods=['POST'])
+@login_required
+@owner_required(Grave, 'grave_id')
 def delete_grave(grave_id):
     grave = Grave.query.filter_by(id=grave_id).first()
     db.session.delete(grave)
     db.session.commit()
     return redirect(url_for('pages_user.user_page'))
+
+
+@pages_user.route('/zombie_deathday', methods=['POST', 'GET'])
+@login_required
+def zombie_deathday():
+    graves = Grave.query.all()
+    deathday_boys = []
+    for grave in graves:
+        if grave.day_of_death.strftime('%m-%d') == datetime.datetime.today().strftime('%m-%d'):
+            deathday_boys.append(grave)
+
+    return render_template('zombie_deathday.html', deathday_boys=deathday_boys, graves=graves)

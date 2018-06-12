@@ -1,69 +1,60 @@
 #login_box {
-  width: 600px;
-  background-color: #cccccd;
-  margin: 200px 200px 0px 200px;
+  background-color: #ffffff;
+  margin: auto;
 }
 
 #register_box {
-  width: 600px;
-  background-color: #cccccd;
-  margin: 40px 200px 0px 200px;
+  background-color: #ffffff;
+  margin: auto;
 }
 
 .input_field {
   width: 500px;
   height: 20px;
-  margin: 0px 45px 3px 45px;
+  margin: auto;
 }
 
 .input_field_3_4 {
-  width: 330px;
+  width: 500px;
   height: 20px;
-  margin: 0px 0px 3px 45px;
+  margin: auto;
 }
 
 .input_field_1_2 {
-  width: 219.5px;
+  width: 500px;
   height: 20px;
-  margin: 0px 0px 3px 45px;
+  margin: auto;
 }
 
 .input_field_1_4 {
-  width: 109px;
+  width: 200px;
   height: 20px;
-  margin: 0px 0px 3px 45px;
+  margin: auto;
 }
 
 .input_field_description {
-  font-size: 14px;
-  margin: 0px 0px 0px 50px;
+  font-size: 15px;
+  padding: 3px;
+  margin: auto;
 }
 
 .input_category {
-  text-align: center;
-  font-size: 18px;
-  padding: 5px 0px 0px 0px;
+  text-align: left;
+  font-size: 17px;
 }
 
 .small_redirect_text {
-  font-size: 11px;
+  font-size: 14px;
   text-decoration: none;
 }
 
 .log_reg_button {
-  width: 80px;
-  height: 35px;
-  margin: 15px 10px 10px 45px;
+  text-align: left;
+  margin: auto;
 }
 
 .error_msg {
-  text-align: center;
+  text-align: left;
   font-size: 12px;
   color: #ee1111;
-}
-
-.succes_msg {
-  text-align: center;
-  font-size: 12px;
-  color: #33bb33;
 }

@@ -18,6 +18,7 @@
 <div id="register_box">
 {% if request.url_rule.endpoint == 'pages_log_sys.register' %}
 <div class="input_category">Dane wymagane do rejestracji:</div>
+    <br>
 <!-- input do podania emaila -->
 <div>{{ render_field(form_email.email, class="input_field") }}</div>
 <div class="error_msg" id="email_field_error"></div>
@@ -60,6 +61,7 @@
 {% endif %}
 
 {% if request.url_rule.endpoint == 'pages_log_sys.register' %}
+    <br>
 <input class ="log_reg_button" type=submit value="Rejestruj">
 <a class="small_redirect_text" href="{{url_for('pages_log_sys.login')}}">Masz już konto? Zaloguj się!</a>
 {% endif %}

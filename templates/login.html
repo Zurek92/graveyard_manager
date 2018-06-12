@@ -11,6 +11,7 @@
             <div class="input_category">Aby zalogować, podaj adres e-mail i hasło:</div>
             <div>{{ render_field(form_login.email_login, class="input_field") }}</div>
             <div>{{ render_field(form_login.password, class="input_field") }}</div>
+            <br>
             <input class ="log_reg_button" type=submit value="Zaloguj">
             <a class="small_redirect_text" href="{{url_for('pages_log_sys.register')}}">Nie masz konta? Zarejestruj się!</a>
         </form>

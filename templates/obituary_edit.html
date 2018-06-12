@@ -7,7 +7,7 @@
 {% include 'flash_msg.html' %}
 {% from "_formhelpers.html" import render_field %}
 <div id="new_obituary" class="admin_option_button"><span>Dodaj nowy nekrolog</span></div>
-<div id="new_obituary_box" class="admin_option_box" style="display: block;">
+<div id="new_obituary_box" class="admin_option_box">
     <form method="POST">
         {{ render_field(form_obituary.name, class="text_input post_header") }}
         {{ render_field(form_obituary.surname, class="text_input post_header") }}

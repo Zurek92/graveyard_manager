@@ -35,37 +35,45 @@ def obituaries():
 def graves():
     search_name = request.args.get('search_name')
     search_last_name = request.args.get('search_last_name')
-    if not search_name and not search_last_name:
-        #tworzy listę grobów
-        graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,
-                                       Grave.parcel_id)
+    if current_user.is_authenticated:
+        if not search_name and not search_last_name:
+            #tworzy listę grobów
+            graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death, Grave.parcel_id, Family.id.label("my_family"))\
+                .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))
+        else:
+            #wyszukiwarka
+            search_like_name = '%'+search_name+'%'
+            search_like_last_name = '%' + search_last_name + '%'
+            graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id, Family.id.label("my_family"))\
+                .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))\
+                .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
     else:
-        #wyszukiwarka
-        search_like_name = '%'+search_name+'%'
-        search_like_last_name = '%' + search_last_name + '%'
-        graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id)\
-            .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
+        if not search_name and not search_last_name:
+            #tworzy listę grobów
+            graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death, Grave.parcel_id)
+        else:
+            #wyszukiwarka
+            search_like_name = '%'+search_name+'%'
+            search_like_last_name = '%' + search_last_name + '%'
+            graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id)\
+                .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
 
-    return render_template('graves.html', graves_list=graves_list)
-
+    return render_template('graves.html', graves_list=graves_list, current_user=current_user)
 
 @pages.route('/graves/<grave_id>/add-favourite', methods=['GET'])
 @login_required
 def add_favourite(grave_id):
-    if current_user.is_authenticated:
-        is_family = db.session.query(Family.user_id, Family.grave_id).\
-            filter(Family.user_id == current_user.id, Family.grave_id == grave_id).first()
-        if not is_family:
-            new_favourite = Family(user_id=current_user.id,
-                                   grave_id=grave_id)
-            db.session.add(new_favourite)
-            db.session.commit()
-            flash('Dodano do znanych grobów', 'succes')
-        else:
-            flash('Ten grób jest już w znanych grobach', 'error')
 
+    is_family = db.session.query(Family.user_id, Family.grave_id).\
+        filter(Family.user_id == current_user.id, Family.grave_id == grave_id).first()
+    if not is_family:
+        new_favourite = Family(user_id=current_user.id,
+                               grave_id=grave_id)
+        db.session.add(new_favourite)
+        db.session.commit()
+        flash('Dodano do znanych grobów', 'succes')
     else:
-        flash('Nie jesteś zalogowany', 'error')
+        flash('Ten grób jest już w znanych grobach', 'error')
 
     return redirect('/graves')
 
@@ -73,11 +81,15 @@ def add_favourite(grave_id):
 @pages.route('/user/delete-favourite/<grave_id>', methods=['GET'])
 @login_required
 def delete_favourite(grave_id):
-    pass
-    # my_favourite = Family.query.filter_by(id=grave_id).first()
-    # db.session.delete(my_favourite)
-    # db.session.commit()
-    # return redirect(url_for('pages.user_page'))
+    back_url = request.args.get('back_url')
+    my_favourite = Family.query.filter_by(user_id=current_user.id, grave_id=grave_id).first()
+    if my_favourite:
+        db.session.delete(my_favourite)
+        db.session.commit()
+    if back_url:
+        return redirect(back_url)
+    else:
+        return redirect('/')
 
 
 @pages.app_errorhandler(404)

@@ -1,37 +1,40 @@
 <div id="navbar">
-    <div class="nav_button nav_button--left">
-        <a href="{{url_for('pages.index')}}">Strona Główna</a>
+    <div id="up_bar"><div class="up_bar_txt">Cmentarz XYZ</div></div>
+    <div id="btn_container">
+        <div class="nav_button nav_button--left">
+            <a href="{{url_for('pages.index')}}">Strona Główna</a>
+        </div>
+        <div class="nav_button nav_button--left">
+            <a href="{{url_for('pages.obituaries')}}">Nekrologi</a>
+        </div>
+        <div class="nav_button nav_button--left">
+            <a href="{{url_for('pages.graves')}}">Wyszukaj grób</a>
+        </div>
+        {% if current_user.is_authenticated %}
+        <div class="nav_button nav_button--right">
+            <a href="{{url_for('pages_log_sys.logout')}}">Wyloguj</a>
+        </div>
+        <div class="nav_button nav_button--right">
+            <a class="nav_log_in_as" href="{{ url_for('pages_user.user_page') }}">
+                Zalogowany jako:<br>
+                {% if current_user.name and current_user.last_name %}
+                    {{ current_user.name }} {{ current_user.last_name }}
+                {% else %}
+                    {{ current_user.email }}
+                {% endif %}
+            </a>
+        </div>
+        {% else %}
+        <div class="nav_button nav_button--right">
+            <a href="{{url_for('pages_log_sys.register')}}">Rejestruj</a>
+        </div>
+        <div class="nav_button nav_button--right">
+            <a href="{{url_for('pages_log_sys.login')}}">Zaloguj</a>
+        </div>
+        {% endif %}
+        <div style="clear: both"></div>
+        {% if current_user.admin %}
+        <div class="admin_panel nav_button"><a href="{{ url_for('pages_admin.admin') }}">Panel administratora</a></div>
+        {% endif %}
     </div>
-    <div class="nav_button nav_button--left">
-        <a href="{{url_for('pages.obituaries')}}">Nekrologi</a>
-    </div>
-    <div class="nav_button nav_button--left">
-        <a href="#">Kolejny guzik :)</a>
-    </div>
-    {% if current_user.is_authenticated %}
-    <div class="nav_button nav_button--right">
-        <a href="{{url_for('pages_log_sys.logout')}}">Wyloguj</a>
-    </div>
-    <div class="nav_button nav_button--right">
-        <a class="nav_log_in_as" href="{{ url_for('pages_user.user_page') }}">
-            Zalogowany jako:<br>
-            {% if current_user.name and current_user.last_name %}
-                {{ current_user.name }} {{ current_user.last_name }}
-            {% else %}
-                {{ current_user.email }}
-            {% endif %}
-        </a>
-    </div>
-    {% else %}
-    <div class="nav_button nav_button--right">
-        <a href="{{url_for('pages_log_sys.register')}}">Rejestruj</a>
-    </div>
-    <div class="nav_button nav_button--right">
-        <a href="{{url_for('pages_log_sys.login')}}">Zaloguj</a>
-    </div>
-    {% endif %}
-    <div style="clear: both"></div>
-    {% if current_user.admin %}
-    <div class="admin_panel"><a href="{{ url_for('pages_admin.admin') }}">panel administratora</a></div>
-    {% endif %}
 </div>

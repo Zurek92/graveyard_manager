@@ -6,7 +6,7 @@
 {% include 'flash_msg.html' %}
 <div class="info_on_main_page">
     <p>
-        <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> Witamy na stronie cmentarza XYZ!</h2>
+        <h2> Witamy na stronie cmentarza XYZ!</h2>
     </p>
     <p>
         W naszym serwisie znajdą Państwo wszystkie informacje dotyczące naszego cmentarza.
@@ -17,8 +17,8 @@
         W razie pytań lub jakichkolwiek wątpliwości prosimy o kontakt.
     </p>
 </div>
-<div class="info_on_main_page">
-    <h2>Aktualności:</h2>
+<div class="info_on_main_page_news">
+        <h2>Aktualności:</h2>
 </div>
 {% if infos %}
     {% for info in infos %}
@@ -31,7 +31,7 @@
         <img class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
     </a>
     {% endif %}
-    <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
+    <h3> {{ info.title }}</h3>
     <p class="admin_msg">{{ info.content }}</p>
     <div class="small_txt_info">Data utworzenia: {{info.create_date.strftime('%Y-%m-%d %H:%M:%S')}}</div>
 </div>

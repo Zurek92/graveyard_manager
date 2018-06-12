@@ -4,6 +4,7 @@
 
 from flask import Blueprint, redirect, url_for, render_template, request, flash, abort
 from flask_login import current_user, login_required
+from functools import wraps
 import datetime
 
 from data_db_manage import obituary_add_data
@@ -17,12 +18,11 @@ pages_admin = Blueprint('pages_admin', __name__)
 
 def admin_required(func):
     """Dekorator, sprawdza czy użytkownik ma status administratora."""
+    @wraps(func)
     def wrapper(*args, **kwargs):
         if current_user.admin:
             return func(*args, **kwargs)
         return abort(404)
-    # musi być zmieniona nazwa - wynika to z samego flaska a nie konstrukcji dekoratora
-    wrapper.__name__ = func.__name__
     return wrapper
 
 

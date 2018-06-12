@@ -1,0 +1,46 @@
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.parcel_taken {
+    background:#454545;
+    padding:0px;
+    -webkit-border-radius:5px;
+    box-sizing: content-box;
+
+}
+
+.parcel_free {
+    background:#d2d2d2;
+    padding:0px;
+    -webkit-border-radius:5px;
+    box-sizing: content-box;
+
+}
+
+.parcel_button > a {
+    color:#FFFFFF;
+    text-decoration:none;
+    display: block;
+    padding: 12px 24px;
+    height: 10px
+    width: 20px
+    text-align:center;
+}

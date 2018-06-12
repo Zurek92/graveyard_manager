@@ -5,8 +5,8 @@
 {% endblock %}
 {% block body %}
 {% include 'flash_msg.html' %}
-<div id="new_post" class="admin_option_button" style="cursor: default"><span>Usuwanie wiadomości</span></div>
-<div id="new_post_box" class="admin_option_box" style="display: block;">
+<div id="new_post" class="admin_option_button"><span>Usuwanie wiadomości</span></div>
+<div id="new_post_box" class="admin_option_box">
     <div class="warning">UWAGA: używasz właśnie opcji usuwania wiadomości, spowoduje to całkowite jej usunięcie, procesu tego nie będzie można cofnąć!</div>
     <form method="POST">
         <input class="text_input post_header" name="post_header" placeholder="Nagłówek" type="text" value="{{ message.title }}" disabled>

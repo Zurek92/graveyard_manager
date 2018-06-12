@@ -5,31 +5,26 @@
 {% block body %}
 {% include 'flash_msg.html' %}
 
-<h3>Lista grobów</h3>
-
-<p><b>Filtruj</b></p>
+<h3>Wyszukaj grób</h3>
 
 <form method="get" action="/graves">
-    Imię <input type="search" name="search_name">
-    Nazwisko <input type="search" name="search_last_name">
+    Imię: <input type="search" name="search_name">
+    Nazwisko: <input type="search" name="search_last_name">
     <button type="submit">Filtruj</button>
 
 </form>
-
-<p></p>
-
-
-
-<table style="width:100%">
+<br>
+<table class="graves_table">
 
     <tr>
-    <th><b>Imię</b></th>
-    <th><b>Nazwisko</b></th>
-    <th><b>Data urodzenia</b></th>
-    <th><b>Data śmierci</b></th>
-        <th><b>Numer parceli</b></th>
-        <th><b>Znany grób</b></th>
-
+    <th>Imię</th>
+    <th>Nazwisko</th>
+    <th>Data urodzenia</th>
+    <th>Data śmierci</th>
+    <th>Numer parceli</th>
+        {% if current_user.is_authenticated %}
+    <th>Znany grób</th>
+    {% endif %}
     </tr>
 
 
@@ -42,7 +37,13 @@
             <td>{{ grave.day_of_birth}}</td>
             <td>{{ grave.day_of_death}}</td>
             <td>{{ grave.parcel_id}}</td>
+            {% if current_user.is_authenticated %}
+            {% if grave.my_family %}
+            <td><a href="/user/delete-favourite/{{grave.id}}?back_url=/graves">Usuń</a></td>
+            {% else %}
             <td><a href="/graves/{{grave.id}}/add-favourite">Dodaj</a></td>
+            {% endif %}
+            {% endif %}
         </tr>
     {% endfor %}
 </table>

@@ -1,17 +1,63 @@
 body {
-    background-color: #9a9a9a;
-    margin: 0px;
-    padding: 0px;
+    background-color: #ffffff;
+    margin: auto;
 }
 
 #box {
-    background-color: #898989;
-    width: 1000px;
+    background-color: #ffffff;
+    width: 55%;
     min-height: 100vh;
     margin-left: auto;
     margin-right: auto;
-    border-left: 1px solid #111111;
-    border-right: 1px solid #111111;
+    padding-top: 170px;
+}
+
+a {
+    color: #000000;
+}
+
+a:hover {
+    color: #afafaf;
+}
+
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h4 {
+    display: block;
+    font-size: 1em;
+    margin-top: 1.33em;
+    margin-bottom: 1.33em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
 }
 
 /* messages on index page */
@@ -20,14 +66,13 @@ body {
     min-height: 50px;
     margin-left: 2.5%;
     margin-top: 15px;
-    border: 3px solid #666666;
-    text-align: center;
     clear: both;
 }
 
-.candle {
-    width: 35px;
-    height: 35px;
+.info_on_main_page_news {
+    width: 95%;
+    min-height: 20px;
+    margin-left: 2.5%;
 }
 
 .info_on_main_page > p.admin_msg {
@@ -35,15 +80,13 @@ body {
 }
 
 .small_txt_info {
-    font-size: 11px;
+    font-size: 12px;
     text-align: left;
-    padding: 4px;
-    width: 230px;
 }
 
 .edit_icon {
     display: block;
-    float: left;
+    float: right;
     width: 30px;
     height: 30px;
 }
@@ -57,24 +100,23 @@ body {
 
 /* obituaries style */
 .outside_border {
-    width: 700px;
-    height: 400px;
+    background-color: #ffffff;
+    width: 100%;
     border: 1px solid black;
-    margin: 20px 150px 0px 150px;
-    background-color: #eeeeee;
 }
 
 .inside_border {
-    width: 640px;
-    height: 340px;
-    margin: 25px;
+    background-color: #ffffff;
+    width: calc(100%-30px);
+    height: calc(100%-30px);
     border: 5px solid black;
     text-align: center;
+    margin: 15px;
 }
 
 .cross_icon {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
 }
 
 .obituary_name {
@@ -83,6 +125,21 @@ body {
 }
 
 .simple_txt {
-    text-align: center;
-    white-space: pre-wrap;
+    text-align: left;
+    white-space: pre;
 }
+
+.graves_table {
+    width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.graves_table th, .graves_table td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    text-align: center;
+}
+
+

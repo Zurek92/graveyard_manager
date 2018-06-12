@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     active_user = db.Column(db.Boolean, default=DB.DEFAULT_ACTIVE_USER)
-    token_id = db.Column(db.String(100), unique=True)
+    token_id = db.Column(db.Text, unique=True)
     email = db.Column(db.String(63), unique=True, nullable=False)
     password = db.Column(db.String(72), nullable=False)
     name = db.Column(db.String(80))

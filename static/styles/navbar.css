@@ -1,63 +1,62 @@
 #navbar {
     position: fixed;
-    z-index: 10;
     width: 100%;
-    height: 58px;
-    background-color: #676767;
-    border-top: 1px solid #222222;
-    border-bottom: 1px solid #222222;
+    height: 160px;
+    background-color: #515151;
 }
 
+#btn_container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 55%;
+}
+
+#up_bar {
+   height: 70px;
+   background-color: #ababab;
+   width: 100%;
+   margin: auto;
+}
+
+.up_bar_txt {
+   font-size: 30px;
+   width: 55%;
+   margin: auto;
+   padding: 17px;
+   color: #4d4d4d;
+}
 
 .nav_button {
-    /* background-color: #C3B091; */
-    background: -moz-radial-gradient(#C3B091, #676767);
-    background: -webkit-radial-gradient(#C3B091, #676767);
-    background: -o-radial-gradient(#C3B091, #676767);
+    background: #515151;
     height: 42px;
     text-align: center;
     line-height: 42px;
-    border-radius: 10px;
+    padding: 3px 0px 0px 0px;
+
 }
 
 .nav_button--right {
     float: right;
     min-width: 100px;
-    margin: 8px 8px 8px 0px;
+    margin: auto;
 }
 
 .nav_button--left {
     float: left;
     width: 140px;
-    margin: 8px 0px 8px 8px;
+    margin: auto;
 }
-
-.nav_button:hover {
-    /* background-color: #799966; */
-    background: -moz-radial-gradient(#799966, #676767);
-    background: -webkit-radial-gradient(#799966, #676767);
-    background: -o-radial-gradient(#799966, #676767);
-}
-
 
 .nav_button > a {
     display: block;
     text-decoration: none;
     padding: 0px 5px 0px 5px;
-    color: #111111;
+    color: #ffffff;
     height: 42px;
 }
 
 .nav_button > a:hover {
     color: #343434;
-}
-
-.nav_button--left > a {
-    width: 140px;
-}
-
-.nav_button--right > a {
-    width-min: 100px;
 }
 
 .nav_log_in_as {
@@ -67,17 +66,10 @@
 }
 
 .admin_panel {
-    width: 200px;
-    height: 30px;
-    background-color: #676767;
-    margin-top: 10px;
-    border: 1px solid #222222;
-}
-
-.admin_panel > a {
-    display: block;
-    text-decoration: none;
+    background: #515151;
+    height: 42px;
     text-align: center;
-    line-height: 30px;
-    color: #dddddd;
+    line-height: 42px;
+    float: left;
+    margin: auto;
 }

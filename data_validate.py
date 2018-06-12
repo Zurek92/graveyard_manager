@@ -4,10 +4,27 @@
 # importy modułów py
 import datetime
 import re
+from flask import abort
+from flask_login import current_user
+from functools import wraps
 from urllib.parse import urlparse
 from wtforms import Form, StringField, PasswordField, IntegerField, RadioField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import ValidationError, input_required, email, length, equal_to
+from wtforms.validators import ValidationError, input_required, email, length, equal_to, Optional
+
+
+def owner_required(db_param, func_param):
+    """Funkcja z parametrami dla dekoratora."""
+    def owner_required_call(func):
+        """Prawdziwy dekorator, sprawdza czy dany element należy do użytkownika."""
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            param = db_param.query.get_or_404(kwargs[func_param])
+            if current_user.id == param.user_id:
+                return func(*args, **kwargs)
+            return abort(404)
+        return wrapper
+    return owner_required_call
 
 
 def is_safe_next(next_page):
@@ -107,3 +124,32 @@ class ObituaryForm(Form):
                              render_kw={'required': True, 'type': 'number', 'min': 0, 'max': 150})
     death_date = DateField('Data śmierci', format='%Y-%m-%d', render_kw={'required': True})
     gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')], default='man')
+
+
+class NewGraveForm(Form):
+    """Klasa wtforms do walidacji danych dotyczących grobu."""
+    def name_validator(self, field):
+        if not re.match(r'^[A-Za-z -]+$', field.data):
+            raise ValidationError('Pole może zawierać tylko litery, spacje i myślniki!')
+
+    def date_past(self, field):
+        today = datetime.datetime.today()
+        if field.data > datetime.datetime.date(today):
+            raise ValidationError('Data musi być starsza od dzisiejszej daty!')
+
+    def death_after(self, field):
+        if field.data < self.birth_date.data:
+            raise ValidationError('Data urodzenia nie może przekroczyć daty śmierci!')
+
+    name = StringField('Imię', [input_required(message='Pole wymagane!'),
+                                name_validator],
+                       render_kw={'required': True})
+    surname = StringField('Nazwisko', [input_required(message='Pole wymagane!'),
+                                       name_validator],
+                          render_kw={'required': True})
+    birth_date = DateField('Data urodzenia', [date_past],
+                           format='%Y-%m-%d',
+                           render_kw={'required': True})
+    death_date = DateField('Data śmierci',
+                           [Optional(), date_past, death_after],
+                           format='%Y-%m-%d')

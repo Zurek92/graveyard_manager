@@ -1,32 +1,32 @@
 .admin_option_button {
-    width: 700px;
-    height: 30px;
-    margin: 20px 150px 0px 150px;
-    text-align: center;
+    width: 100%;
+    height: 100%;
+    text-align: left;
     line-height: 30px;
-    background-color: #555655;
-    cursor: pointer;
+    padding: 10px;
+    background-color: #e4e4e4;
+    border: 1px solid #000000;
 }
 
 .admin_option_box {
-    width: 696px;
-    min-height: 400px;
-    margin: 0px 150px 10px 150px;
-    border: 2px solid #555655;
-    display: none;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #000000;
 }
 
 .admin_option_box > form > .text_input {
     border: 1px solid #555655;
-    border-radius: 5px;
-    width: 600px;
-    margin: 5px 48px 5px 48px;
+    border-radius: 3px;
+    width: 100%;
+    text-align: left;
     color: black;
     display: block;
+    margin-bottom: 10px;
 }
 
 .admin_option_box > form > textarea {
-    height: 300px;
+    height: 100px;
+    width: 100%;
     resize: none;
 }
 
@@ -34,16 +34,17 @@
     height: 20px;
 }
 
-.check_option {
-    margin-left: 48px;
-}
 .send_data {
-    margin-left: 48px;
     display: block;
+    padding: 5px;
+}
+
+.check_option {
+    margin: 5px;
+    padding-bottom: 2px;
 }
 
 .warning {
     font-weight: bold;
     color: #cc2233;
-    padding-left: 50px;
 }

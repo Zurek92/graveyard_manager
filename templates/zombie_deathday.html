@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Cmentarz - zombie urodziny</title>
+{% endblock %}
+{% block body %}
+
+<style>
+
+.center {
+display: block;
+margin-left: auto;
+margin-right: auto;
+width: 30%;
+}
+
+</style>
+
+{% if deathday_boys %}
+
+<h3>Dziś swoje grobowe urodziny obchodzą: </h3>
+
+{% for zombie in deathday_boys %}
+
+<ol>
+    {{ zombie.name }}
+    {{ zombie.last_name }},
+    parcela nr: {{ zombie.parcel_id }}
+</ol>
+
+{% endfor %}
+
+ <h4 align="center">Wpadnij złożyć życzenia !!! </h4>
+
+
+<div>
+    <img src="{{ url_for('static', filename='pictures/zombie_party.png') }}" class="center">
+</div>
+
+{% endif %}
+{% if not deathday_boys %}
+
+<br>
+<br>
+<h3 align="center">Dziś nie obchodzimy żadnych zombie urodzin.</h3>
+
+<div>
+    <img src="{{ url_for('static', filename='pictures/rose.png') }}" class="center">
+</div>
+{% endif %}
+
+<p><a href="{{ url_for('pages_user.user_page')}}">Powrót do strony użytkowanika</a></p>
+{% endblock %}

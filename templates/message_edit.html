@@ -5,8 +5,8 @@
 {% endblock %}
 {% block body %}
 {% include 'flash_msg.html' %}
-<div id="new_post" class="admin_option_button" style="cursor: default"><span>Edycja wiadomości</span></div>
-<div id="new_post_box" class="admin_option_box" style="display: block;">
+<div id="new_post" class="admin_option_button"><span>Edycja wiadomości</span></div>
+<div id="new_post_box" class="admin_option_box">
     <form method="POST">
         <input class="text_input post_header" name="post_header" placeholder="Nagłówek" type="text" value="{{ message.title }}" required>
         <textarea class="text_input" name="post_content" placeholder="Tekst wiadomości" required>{{ message.content }}</textarea>

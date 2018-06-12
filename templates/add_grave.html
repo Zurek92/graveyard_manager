@@ -3,23 +3,30 @@
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
+{% from "_formhelpers.html" import render_field %}
+<style>
+.error {
+color: #990000;
+}
+</style>
 
 <h3>Podaj informacje dotyczące grobu: </h3>
-<p>Wybrana parcela: {{ p_id }}</p>
+<p>Wybrana parcela: {{ parcel.id }}</p>
 
 <p>Cena: {{ parcel_type.price }}</p>
 
 
-<form method="post" action="{{url_for('pages_user.add_grave', p_id=parcel.id)}}">
-    Imię:
-    <input type="text" name="name">
-    Nazwisko:
-    <input type="text" name="last_name">
-    Data urodzenia:
-    <input type="date" name="day_of_birth">
-    Data śmierci:
-    <input type="date" name="day_of_death">
+<form method="post">
+    <div>{{ render_field(form.name, class="input_field") }}</div>
+    <div>{{ render_field(form.surname, class="input_field") }}</div>
+    <div>{{ render_field(form.birth_date, class="input_field") }}</div>
+    <div>{{ render_field(form.death_date, class="input_field") }}</div>
     <button type="submit">Rezerwuj</button>
 </form>
+
+{% if error %}
+<p class=error>{{ error }} </p>
+{% endif %}
+<br>
 
 {% endblock %}

@@ -3,6 +3,7 @@ __pycache__
 .idea
 *.db
 test.py
-config.py
+config_dev.py
 uwsgi.ini
+grave_env
 venv

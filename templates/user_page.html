@@ -3,56 +3,35 @@
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
+
 {% include 'flash_msg.html' %}
 
-<style>
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-}
-
-.parcel_taken {
-    background:#454545;
-    padding:10px 20px;
-    -webkit-border-radius:5px;
-    box-sizing: border-box;
-}
-
-.parcel_free {
-    background:#d2d2d2;
-    padding:10px 20px;
-    -webkit-border-radius:5px;
-    box-sizing: border-box;
-}
-
-
-</style>
-
-<a href="{{ url_for('pages_user.user_set_pw') }}">zmiana hasła</a>
 <br>
+<form method="post">
+    <button type="submit" name="zombie_mode">TRYB ZOMBIE</button>
+</form>
 
-<a href="{{ url_for('pages_user.user_set_data') }}">zmiana danych personalnych</a>
+{% if zombie_mode %}
+<p>Uwaga! Po zmroku zombie lubią się przechadzać po cmentarzu! Kliknij "Śledź zombie",
+    by zobaczyć gdzie aktualnie przebywają.</p>
+
+
+    <div class="follow_button">
+        <form method="post">
+    <button type="submit" name="follow_zombie">Śledź zombie</button>
+            </form>
+    </div>
+
+<p>Sprawdź, czy ktoś ma dziś <a href="{{url_for('pages_user.zombie_deathday')}}"> zombie urodziny! </a></p>
+
+{% endif %}
+{% if not zombie_mode %}
+
+
 <br>
+<a href="{{ url_for('pages_user.user_set_pw') }}">Zmiana hasła</a>
 <br>
-<a href="{{ url_for('pages.graves') }}">Wyszukiwarka grobów</a>
+<a href="{{ url_for('pages_user.user_set_data') }}">Zmiana danych personalnych</a>
 
 
 <h3>Moje groby</h3>
@@ -63,17 +42,20 @@
         (parcela: {{ grave.parcel_id }})
     </ol>
     {% endfor %}
+
 {% endif %}
 
-<h3>Ulubione groby</h3>
+<h3>Znane groby</h3>
 
-<table border>
+{% if favourite_graves_list %}
+
+<table class="graves_table">
 <tr>
-    <th>Grave id</th>
     <th>Imię</th>
     <th>Nazwisko</th>
     <th>Data urodzenia</th>
-    <th>Data śmiercie</th>
+    <th>Data śmierci</th>
+    <th>Numer parceli</th>
     <th>Usuń</th>
 </tr>
 
@@ -81,22 +63,28 @@
 {% for favourite_grave in favourite_graves_list %}
 
     <tr>
-        <td>{{ favourite_grave.id }}</td>
         <td>{{ favourite_grave.name }}</td>
         <td>{{ favourite_grave.last_name }}</td>
         <td>{{ favourite_grave.day_of_birth }}</td>
         <td>{{ favourite_grave.day_of_death }}</td>
-        <td>Usuń</td>
+        <td>{{ favourite_grave.parcel_id }}</td>
+        <td><a href="/user/delete-favourite/{{favourite_grave.id}}?back_url=/user">Usuń</a></td>
     </tr>
 {% endfor %}
 
 </table>
 
-</table>
+{% else %}
+Nie masz znanych grobów
+
+{% endif %}
 
 
 <h3>Podgląd mapy cmentarza</h3>
 <p>Wybierz wolną parcelę w celu rezerwacji grobu</p>
+
+{% endif %}
+
 <table width="700"  align="center" class="table">
     {% for j in range(1, max_p+1) %}
       <tr>
@@ -105,19 +93,21 @@
                 {% if parcel.position_x == j %}
                     {% if parcel.position_y == z %}
                         {% if parcel.id in taken_parcels %}
-                        <th width="40" height="40" class="parcel_taken">
-                            <div class="tooltip"><a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"
-                               style="color:#FFFFFF;text-decoration:none;"> {{ parcel.id }} </a>
-                                  <span class="tooltiptext"> Parcela zajęta
-                                  </span>
+                        <th class="parcel_taken">
+                            <div class="tooltip">
+                                <div class="parcel_button">
+                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }} </a>
+                                    <span class="tooltiptext"> Parcela zajęta </span>
+                                </div>
                             </div>
                         </th>
                         {% else %}
-                        <th width="40" height="40" class="parcel_free">
+                        <th class="parcel_free">
                             <div class="tooltip">
-                            <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"
-                               style="color:#FFFFFF;text-decoration:none;"> {{ parcel.id }} </a>
-                                <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
+                                 <div class="parcel_button">
+                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
+                                    <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
+                                </div>
                             </div>
                         </th>
                         {% endif %}
@@ -128,5 +118,12 @@
       </tr>
     {% endfor %}
 </table>
+
+{% if zombie_mode %}
+<br>
+<form method="post" action="{{url_for('pages_user.user_page')}}">
+    <button type="submit" name="end">Zakończ tryb zombie</button>
+</form>
+{% endif %}
 
 {% endblock %}

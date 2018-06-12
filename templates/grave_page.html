@@ -3,29 +3,46 @@
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
+{% from "_formhelpers.html" import render_field %}
+<style>
+.error {
+color: #990000;
+}
+</style>
 
 <h4>Dane grobu:</h4>
+
+
 
 Imię: {{ grave.name }}
 <br>Nazwisko: {{ grave.last_name }}
 <br>Parcela: {{ grave.parcel_id }}
-<br>Data urodzenia: {{ grave.day_of_birth }}
-<br>Data śmierci: {{ grave.day_of_death }}
+<br>Data urodzenia: {{ grave.day_of_birth.strftime('%Y-%m-%d') }}
+{% if grave.day_of_death %}
+<br>Data śmierci: {{ grave.day_of_death.strftime('%Y-%m-%d') }}
+{% endif %}
 <br>Typ parceli: {{ parcel_type.description }}
 <br>Cena: {{ parcel_type.price }}
 <br>Opłacony do:
 
+
+
 <br>
 <h4>Edycja danych</h4>
 
-<form method="post" action="{{url_for('pages_user.grave', grave_id=grave.id)}}">
-    <input type="text" name="edited_name" value="{{ grave.name }}">
-    <input type="text" name="edited_last_name" value="{{ grave.last_name }}">
-    Data urodzenia: <input type="date" name="edited_birth" value="{{ grave.day_of_birth }}">
-    Data śmierci: <input type="date" name="edited_death" value="{{ grave.day_of_death }}">
-    <button type="submit">Submit</button>
+
+<form method="post">
+    <div>{{ render_field(form.name, class="input_field") }}</div>
+    <div>{{ render_field(form.surname, class="input_field") }}</div>
+    <div>{{ render_field(form.birth_date, class="input_field") }}</div>
+    <div>{{ render_field(form.death_date, class="input_field") }}</div>
+    <button type="submit">Zmień</button>
 </form>
 
+
+{% if error %}
+<p class=error>{{ error }}</p>
+{% endif %}
 <br>
 
 <form method="post" action="{{url_for('pages_user.delete_grave', grave_id=grave.id)}}">
